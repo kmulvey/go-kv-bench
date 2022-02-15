@@ -6,33 +6,38 @@ import (
 	"testing"
 
 	"github.com/dgraph-io/badger/v3"
-	"github.com/kmulvey/go-kv-bench/data"
+	"github.com/kmulvey/go-kv-bench/testdata"
 )
 
-const dir = "testdata/badgerDB"
+const dir = "benchtestdata.badgerDB"
+
+var badgerOpts = badger.DefaultOptions(dir).WithLoggingLevel(badger.ERROR)
 
 func init() {
+	// we bulldoze right past these errors
 	os.RemoveAll(dir)
 	os.Mkdir(dir, 0755)
 }
 
-func BenchmarkBadgerDBPutValue64B(b *testing.B) {
-	b.ReportAllocs()
-	badgerDB, err := badger.Open(badger.DefaultOptions(dir).WithLoggingLevel(badger.ERROR))
+func deferClose(badgerDB *badger.DB) {
+	var err = badgerDB.Close()
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		var err = badgerDB.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
+}
+
+func BenchmarkBadgerDBPutValue64B(b *testing.B) {
+	b.ReportAllocs()
+	badgerDB, err := badger.Open(badgerOpts)
+	if err != nil {
+		panic(err)
+	}
+	defer deferClose(badgerDB)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := data.GetKey(n)
-		val := data.GetValue64B()
+		key := testdata.GetKey(n)
+		val := testdata.GetValue64B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -45,15 +50,16 @@ func BenchmarkBadgerDBPutValue64B(b *testing.B) {
 
 func BenchmarkBadgerDBPutValue128B(b *testing.B) {
 	b.ReportAllocs()
-	badgerDB, err := badger.Open(badger.DefaultOptions(dir))
+	badgerDB, err := badger.Open(badgerOpts)
 	if err != nil {
 		panic(err)
 	}
+	defer deferClose(badgerDB)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := data.GetKey(n)
-		val := data.GetValue128B()
+		key := testdata.GetKey(n)
+		val := testdata.GetValue128B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -66,15 +72,16 @@ func BenchmarkBadgerDBPutValue128B(b *testing.B) {
 
 func BenchmarkBadgerDBPutValue256B(b *testing.B) {
 	b.ReportAllocs()
-	badgerDB, err := badger.Open(badger.DefaultOptions(dir))
+	badgerDB, err := badger.Open(badgerOpts)
 	if err != nil {
 		panic(err)
 	}
+	defer deferClose(badgerDB)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := data.GetKey(n)
-		val := data.GetValue256B()
+		key := testdata.GetKey(n)
+		val := testdata.GetValue256B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -87,15 +94,16 @@ func BenchmarkBadgerDBPutValue256B(b *testing.B) {
 
 func BenchmarkBadgerDBPutValue512B(b *testing.B) {
 	b.ReportAllocs()
-	badgerDB, err := badger.Open(badger.DefaultOptions(dir))
+	badgerDB, err := badger.Open(badgerOpts)
 	if err != nil {
 		panic(err)
 	}
+	defer deferClose(badgerDB)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := data.GetKey(n)
-		val := data.GetValue512B()
+		key := testdata.GetKey(n)
+		val := testdata.GetValue512B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -107,10 +115,11 @@ func BenchmarkBadgerDBPutValue512B(b *testing.B) {
 }
 func BenchmarkBadgerDBGet(b *testing.B) {
 	b.ReportAllocs()
-	badgerDB, err := badger.Open(badger.DefaultOptions(dir))
+	badgerDB, err := badger.Open(badgerOpts)
 	if err != nil {
 		panic(err)
 	}
+	defer deferClose(badgerDB)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
