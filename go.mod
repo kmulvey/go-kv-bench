@@ -2,7 +2,10 @@ module github.com/kmulvey/go-kv-bench
 
 go 1.17
 
-require github.com/dgraph-io/badger/v3 v3.2103.2
+require (
+	github.com/dgraph-io/badger/v3 v3.2103.2
+	github.com/mattn/go-sqlite3 v1.14.11
+)
 
 require (
 	github.com/cespare/xxhash v1.1.0 // indirect

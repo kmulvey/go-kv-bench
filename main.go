@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func main() {
-	res := testing.Benchmark(benchbadger.BenchmarkBadgerDBPutValue512B)
-	fmt.Printf("%s\n%#[1]v\n", res)
+	var result = testing.Benchmark(benchbadger.BenchmarkBadgerDBPutValue512B)
+	insertBenchmarkResult(goBenchmarkResultToSQLBenchmarkResult("BenchmarkBadgerDBPutValue512B", result))
 	os.RemoveAll("benchdata")
 }
