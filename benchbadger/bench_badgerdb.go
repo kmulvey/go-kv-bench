@@ -9,7 +9,7 @@ import (
 	"github.com/kmulvey/go-kv-bench/testdata"
 )
 
-const dir = "benchtestdata.badgerDB"
+const dir = "benchdata/badgerDB"
 
 var badgerOpts = badger.DefaultOptions(dir).WithLoggingLevel(badger.ERROR)
 
