@@ -16,7 +16,7 @@ type benchmarkResult struct {
 	Ns_op       int64
 }
 
-func goBenchmarkResultToSQLBenchmarkResult(benchName string, tbr testing.BenchmarkResult) benchmarkResult {
+func goBenchmarkResultToBenchmarkResult(benchName string, tbr testing.BenchmarkResult) benchmarkResult {
 	return benchmarkResult{
 		Benchname:   benchName,
 		Benchtime:   time.Now(),

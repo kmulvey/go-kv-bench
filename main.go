@@ -9,6 +9,13 @@ import (
 
 func main() {
 	var result = testing.Benchmark(benchbadger.BenchmarkBadgerDBPutValue512B)
-	insertBenchmarkResult(goBenchmarkResultToSQLBenchmarkResult("BenchmarkBadgerDBPutValue512B", result))
+	var br = goBenchmarkResultToBenchmarkResult("BenchmarkBadgerDBPutValue512B", result)
+	insertBenchmarkResult(br)
+
+	var bs = benchSeries{
+		Name:    "BenchmarkBadgerDBPutValue512B",
+		Results: []benchmarkResult{br},
+	}
+	drawChart([]benchSeries{bs}, getNsOp)
 	os.RemoveAll("benchdata")
 }

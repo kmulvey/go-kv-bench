@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/jpeg"
 	"os"
 	"time"
@@ -19,7 +20,7 @@ type benchSeries struct {
 	Results []benchmarkResult
 }
 
-func drawChart(data []benchSeries, getter yValueGetter) {
+func drawChart(data []benchSeries, yGetter yValueGetter) {
 	var graph = new(chart.Chart)
 	graph.Series = make([]chart.Series, len(data))
 
@@ -31,10 +32,12 @@ func drawChart(data []benchSeries, getter yValueGetter) {
 		}
 		for j, b := range s.Results {
 			ts.XValues[j] = b.Benchtime
-			ts.YValues[j] = getter(b)
+			ts.YValues[j] = yGetter(b)
 		}
 		graph.Series[i] = ts
 	}
+
+	fmt.Printf("%+v\n", graph.Series)
 
 	// render the above into a PNG
 	var err error
