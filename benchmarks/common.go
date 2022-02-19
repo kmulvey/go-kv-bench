@@ -20,4 +20,7 @@ func init() {
 	if err := os.Mkdir(boltDBDir, 0755); err != nil {
 		panic(err)
 	}
+	if err := os.Mkdir(nutsDir, 0755); err != nil {
+		panic(err)
+	}
 }
