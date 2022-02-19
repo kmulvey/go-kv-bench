@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var boltDBDir = filepath.Join(baseDir, "boltDB")
-var boltDBFile = filepath.Join(boltDBDir, "bolt.db")
+var boltDir = filepath.Join(baseDir, "boltDB")
+var boltDBFile = filepath.Join(boltDir, "bolt.db")
 
 func deferBoltClose(b *testing.B, boltDB *bolt.DB) {
 	var err = boltDB.Close()
