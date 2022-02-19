@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -11,6 +12,12 @@ func main() {
 	var result = testing.Benchmark(benchmarks.BenchmarkBadgerDBPutValue512B)
 	var br = goBenchmarkResultToBenchmarkResult("BenchmarkBadgerDBPutValue512B", result)
 	insertBenchmarkResult(br)
+	fmt.Println(result)
+
+	result = testing.Benchmark(benchmarks.BenchmarkBoltDBPutValue512B)
+	br = goBenchmarkResultToBenchmarkResult("BenchmarkBoltDBPutValue512B", result)
+	insertBenchmarkResult(br)
+	fmt.Println(result)
 
 	//var bs = benchSeries{
 	//	Name:    "BenchmarkBadgerDBPutValue512B",

@@ -2,7 +2,6 @@ package benchmarks
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/dgraph-io/badger/v3"
@@ -12,12 +11,6 @@ import (
 const badgerDir = baseDir + "/badgerDB"
 
 var badgerOpts = badger.DefaultOptions(badgerDir).WithLoggingLevel(badger.ERROR)
-
-func init() {
-	// we bulldoze right past these errors
-	os.RemoveAll(badgerDir)
-	os.Mkdir(badgerDir, 0755)
-}
 
 func deferClose(badgerDB *badger.DB) {
 	var err = badgerDB.Close()

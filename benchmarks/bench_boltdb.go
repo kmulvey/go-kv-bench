@@ -2,6 +2,7 @@ package benchmarks
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/boltdb/bolt"
@@ -9,7 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const boltDBDir = baseDir + "/boltDB/boltDB.db"
+var boltDBDir = filepath.Join(baseDir, "boltDB")
+var boltDBFile = filepath.Join(boltDBDir, "bolt.db")
 
 func deferBoltClose(b *testing.B, boltDB *bolt.DB) {
 	var err = boltDB.Close()
@@ -18,7 +20,7 @@ func deferBoltClose(b *testing.B, boltDB *bolt.DB) {
 
 func BenchmarkBoltDBPutValue64B(b *testing.B) {
 	b.ReportAllocs()
-	var boltDB, err = bolt.Open(boltDBDir, 0666, nil)
+	var boltDB, err = bolt.Open(boltDBFile, 0666, nil)
 	assert.NoError(b, err)
 	defer deferBoltClose(b, boltDB)
 	b.ResetTimer()
@@ -41,7 +43,7 @@ func BenchmarkBoltDBPutValue64B(b *testing.B) {
 
 func BenchmarkBoltDBPutValue128B(b *testing.B) {
 	b.ReportAllocs()
-	var boltDB, err = bolt.Open(boltDBDir, 0666, nil)
+	var boltDB, err = bolt.Open(boltDBFile, 0666, nil)
 	assert.NoError(b, err)
 	defer deferBoltClose(b, boltDB)
 	b.ResetTimer()
@@ -63,7 +65,7 @@ func BenchmarkBoltDBPutValue128B(b *testing.B) {
 
 func BenchmarkBoltDBPutValue256B(b *testing.B) {
 	b.ReportAllocs()
-	var boltDB, err = bolt.Open(boltDBDir, 0666, nil)
+	var boltDB, err = bolt.Open(boltDBFile, 0666, nil)
 	assert.NoError(b, err)
 	defer deferBoltClose(b, boltDB)
 	b.ResetTimer()
@@ -85,7 +87,7 @@ func BenchmarkBoltDBPutValue256B(b *testing.B) {
 
 func BenchmarkBoltDBPutValue512B(b *testing.B) {
 	b.ReportAllocs()
-	var boltDB, err = bolt.Open(boltDBDir, 0666, nil)
+	var boltDB, err = bolt.Open(boltDBFile, 0666, nil)
 	assert.NoError(b, err)
 	defer deferBoltClose(b, boltDB)
 	b.ResetTimer()
@@ -107,7 +109,7 @@ func BenchmarkBoltDBPutValue512B(b *testing.B) {
 
 func BenchmarkBoltDBGet(b *testing.B) {
 	b.ReportAllocs()
-	var boltDB, err = bolt.Open(boltDBDir, 0666, nil)
+	var boltDB, err = bolt.Open(boltDBFile, 0666, nil)
 	assert.NoError(b, err)
 	defer deferBoltClose(b, boltDB)
 	b.ResetTimer()
