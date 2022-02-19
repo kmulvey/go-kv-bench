@@ -1,4 +1,4 @@
-package benchbadger
+package benchmarks
 
 import (
 	"fmt"
@@ -9,14 +9,14 @@ import (
 	"github.com/kmulvey/go-kv-bench/testdata"
 )
 
-const dir = "benchdata/badgerDB"
+const badgerDir = baseDir + "/badgerDB"
 
-var badgerOpts = badger.DefaultOptions(dir).WithLoggingLevel(badger.ERROR)
+var badgerOpts = badger.DefaultOptions(badgerDir).WithLoggingLevel(badger.ERROR)
 
 func init() {
 	// we bulldoze right past these errors
-	os.RemoveAll(dir)
-	os.Mkdir(dir, 0755)
+	os.RemoveAll(badgerDir)
+	os.Mkdir(badgerDir, 0755)
 }
 
 func deferClose(badgerDB *badger.DB) {
