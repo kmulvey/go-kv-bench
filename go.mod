@@ -6,7 +6,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/dgraph-io/badger/v3 v3.2103.2
 	github.com/mattn/go-sqlite3 v1.14.11
-	github.com/stretchr/testify v1.6.0
+	github.com/stretchr/testify v1.7.0
 	github.com/xujiajun/nutsdb v0.6.0
 )
 
