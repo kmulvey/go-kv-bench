@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/kmulvey/go-kv-bench/testdata"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +13,7 @@ func BenchmarkGoMapPutValue64B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		m[string(testdata.GetKey(n))] = string(testdata.GetValue64B())
+		m[string(GetKey(n))] = string(GetValue64B())
 	}
 }
 
@@ -24,7 +23,7 @@ func BenchmarkGoMapPutValue128B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		m[string(testdata.GetKey(n))] = string(testdata.GetValue128B())
+		m[string(GetKey(n))] = string(GetValue128B())
 	}
 }
 
@@ -34,7 +33,7 @@ func BenchmarkGoMapPutValue256B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		m[string(testdata.GetKey(n))] = string(testdata.GetValue256B())
+		m[string(GetKey(n))] = string(GetValue256B())
 	}
 }
 
@@ -44,7 +43,7 @@ func BenchmarkGoMapPutValue512B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		m[string(testdata.GetKey(n))] = string(testdata.GetValue512B())
+		m[string(GetKey(n))] = string(GetValue512B())
 	}
 }
 
@@ -52,7 +51,7 @@ func BenchmarkGoMapGet(b *testing.B) {
 	b.ReportAllocs()
 	var m = make(map[string]string)
 	for n := 0; n < b.N; n++ {
-		m[string(testdata.GetKey(n))] = string(testdata.GetValue512B())
+		m[string(GetKey(n))] = string(GetValue512B())
 	}
 	b.ResetTimer()
 

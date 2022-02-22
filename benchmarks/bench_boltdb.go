@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/boltdb/bolt"
-	"github.com/kmulvey/go-kv-bench/testdata"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,8 +25,8 @@ func BenchmarkBoltDBPutValue64B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue64B()
+		key := GetKey(n)
+		val := GetValue64B()
 		if err = boltDB.Update(func(tx *bolt.Tx) error {
 			bucket, err := tx.CreateBucketIfNotExists([]byte("bucket1"))
 			if err != nil {
@@ -49,8 +48,8 @@ func BenchmarkBoltDBPutValue128B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue128B()
+		key := GetKey(n)
+		val := GetValue128B()
 		var err = boltDB.Update(func(tx *bolt.Tx) error {
 			bucket, err := tx.CreateBucketIfNotExists([]byte("bucket1"))
 			if err != nil {
@@ -71,8 +70,8 @@ func BenchmarkBoltDBPutValue256B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue256B()
+		key := GetKey(n)
+		val := GetValue256B()
 		var err = boltDB.Update(func(tx *bolt.Tx) error {
 			bucket, err := tx.CreateBucketIfNotExists([]byte("bucket1"))
 			if err != nil {
@@ -93,8 +92,8 @@ func BenchmarkBoltDBPutValue512B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue512B()
+		key := GetKey(n)
+		val := GetValue512B()
 		var err = boltDB.Update(func(tx *bolt.Tx) error {
 			bucket, err := tx.CreateBucketIfNotExists([]byte("bucket1"))
 			if err != nil {

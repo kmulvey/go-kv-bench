@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/kmulvey/go-kv-bench/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/xujiajun/nutsdb"
 )
@@ -38,8 +37,8 @@ func deferNutsClose(b *testing.B, nutsDB *nutsdb.DB) {
 
 func InitNutsDBData(b *testing.B, nutsDB *nutsdb.DB) {
 	for n := 0; n < 10000; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue64B()
+		key := GetKey(n)
+		val := GetValue64B()
 
 		var err = nutsDB.Update(
 			func(tx *nutsdb.Tx) error {
@@ -57,8 +56,8 @@ func BenchmarkNutsDBPutValue64B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue64B()
+		key := GetKey(n)
+		val := GetValue64B()
 		var err = db.Update(
 			func(tx *nutsdb.Tx) error {
 				return tx.Put("bucket1", key, val, 0)
@@ -75,8 +74,8 @@ func BenchmarkNutsDBPutValue128B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue128B()
+		key := GetKey(n)
+		val := GetValue128B()
 		var err = db.Update(
 			func(tx *nutsdb.Tx) error {
 				return tx.Put("bucket1", key, val, 0)
@@ -93,8 +92,8 @@ func BenchmarkNutsDBPutValue256B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue256B()
+		key := GetKey(n)
+		val := GetValue256B()
 		var err = db.Update(
 			func(tx *nutsdb.Tx) error {
 				return tx.Put("bucket1", key, val, 0)
@@ -111,8 +110,8 @@ func BenchmarkNutsDBPutValue512B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue512B()
+		key := GetKey(n)
+		val := GetValue512B()
 		var err = db.Update(
 			func(tx *nutsdb.Tx) error {
 				return tx.Put("bucket1", key, val, 0)

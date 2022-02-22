@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/dgraph-io/badger/v3"
-	"github.com/kmulvey/go-kv-bench/testdata"
 )
 
 const badgerDir = baseDir + "/badgerDB"
@@ -29,8 +28,8 @@ func BenchmarkBadgerDBPutValue64B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue64B()
+		key := GetKey(n)
+		val := GetValue64B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -51,8 +50,8 @@ func BenchmarkBadgerDBPutValue128B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue128B()
+		key := GetKey(n)
+		val := GetValue128B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -73,8 +72,8 @@ func BenchmarkBadgerDBPutValue256B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue256B()
+		key := GetKey(n)
+		val := GetValue256B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
@@ -95,8 +94,8 @@ func BenchmarkBadgerDBPutValue512B(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		key := testdata.GetKey(n)
-		val := testdata.GetValue512B()
+		key := GetKey(n)
+		val := GetValue512B()
 
 		if err = badgerDB.Update(
 			func(txn *badger.Txn) error {
