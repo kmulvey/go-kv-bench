@@ -11,16 +11,19 @@ import (
 
 const outputDir = "./benchresults/graphs"
 
-// 1. line graqh comparing all over time
-// 2. line graph for single over time
-// 3. bar graph for most recent version of each
-
 type yValueGetter func(benchmarkResult) float64
 
-func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yValueGetter) {
+var nameToGetter = map[string]yValueGetter{
+	"ns":          getNsOp,
+	"alloc op":    getAllocOp,
+	"alloc bytes": getAllocBytes,
+}
+
+func drawChart(filename string, benchmarks map[string][]benchmarkResult, yGetter string) {
 	var graph = new(chart.Chart)
 	graph.Series = make([]chart.Series, len(benchmarks))
-	graph.Title = title
+	graph.XAxis.Name = "time"
+	graph.YAxis.Name = yGetter
 
 	var i int
 	for benchmarkName, benchmarkHistory := range benchmarks {
@@ -31,7 +34,7 @@ func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yV
 		}
 		for j, b := range benchmarkHistory {
 			ts.XValues[j] = b.Benchtime
-			ts.YValues[j] = yGetter(b)
+			ts.YValues[j] = nameToGetter[yGetter](b)
 		}
 		graph.Series[i] = ts
 		i++
@@ -46,7 +49,7 @@ func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yV
 	handleErr("get image.Image", err)
 
 	// save it as a jpg
-	out, err := os.Create(filepath.Join(outputDir, title+".jpeg"))
+	out, err := os.Create(filepath.Join(outputDir, filename))
 	handleErr("jpg create", err)
 	handleErr("jpg encode", jpeg.Encode(out, pngData, &jpeg.Options{Quality: 85}))
 	handleErr("jpg close", out.Close())
