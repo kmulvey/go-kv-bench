@@ -1,26 +1,21 @@
 package main
 
 import (
-	"fmt"
 	"image/jpeg"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/wcharczuk/go-chart/v2"
 )
+
+const outputDir = "./benchresults/graphs"
 
 // 1. line graqh comparing all over time
 // 2. line graph for single over time
 // 3. bar graph for most recent version of each
 
 type yValueGetter func(benchmarkResult) float64
-
-type graph struct {
-	Title      string
-	Benchmarks []benchmarkHistory
-}
-
-type benchmarkHistory []benchmarkResult
 
 func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yValueGetter) {
 	var graph = new(chart.Chart)
@@ -42,8 +37,6 @@ func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yV
 		i++
 	}
 
-	fmt.Printf("%+v\n", graph.Series)
-
 	// render the above into a PNG
 	var collector = &chart.ImageWriter{}
 	handleErr("graph.Render", graph.Render(chart.PNG, collector))
@@ -53,7 +46,7 @@ func drawChart(title string, benchmarks map[string][]benchmarkResult, yGetter yV
 	handleErr("get image.Image", err)
 
 	// save it as a jpg
-	out, err := os.Create("graph.jpeg")
+	out, err := os.Create(filepath.Join(outputDir, title+".jpeg"))
 	handleErr("jpg create", err)
 	handleErr("jpg encode", jpeg.Encode(out, pngData, &jpeg.Options{Quality: 85}))
 	handleErr("jpg close", out.Close())
@@ -72,19 +65,4 @@ func getAllocBytes(b benchmarkResult) float64 {
 // getAllocOp conforms to yValueGetter and returns number of allocs per op
 func getAllocOp(b benchmarkResult) float64 {
 	return float64(b.Alloc_op)
-}
-
-func getLongestTimeseries(g graph) []time.Time {
-	var longest []benchmarkResult
-	for _, benchHist := range g.Benchmarks {
-		if len(benchHist) > len(longest) {
-			longest = benchHist
-		}
-	}
-
-	var timeseries = make([]time.Time, len(longest))
-	for i, b := range longest {
-		timeseries[i] = b.Benchtime
-	}
-	return timeseries
 }
