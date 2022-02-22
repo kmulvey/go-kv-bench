@@ -24,6 +24,11 @@ func main() {
 	insertBenchmarkResult(br)
 	fmt.Println(result)
 
+	result = testing.Benchmark(benchmarks.BenchmarkGoMapPutValue512B)
+	br = goBenchmarkResultToBenchmarkResult("BenchmarkGoMapPutValue512B", result)
+	insertBenchmarkResult(br)
+	fmt.Println(result)
+
 	//var bs = benchSeries{
 	//	Name:    "BenchmarkBadgerDBPutValue512B",
 	//	Results: []benchmarkResult{br},

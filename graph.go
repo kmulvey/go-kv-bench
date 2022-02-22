@@ -42,7 +42,6 @@ func drawChart(g graph, yGetter yValueGetter) {
 			var collector = &chart.ImageWriter{}
 			graph.Render(chart.PNG, collector)
 
-
 		//////////////////////////////////////////////////
 		p := plot.New()
 
