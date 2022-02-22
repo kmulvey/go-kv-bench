@@ -45,22 +45,30 @@ func insertBenchmarkResult(br benchmarkResult) {
 	handleErr("insert bench result", err)
 }
 
-func getAllBenchmarkResult() []benchmarkResult {
+func getAllBenchmarkResults() map[string][]benchmarkResult {
 	// open
 	var benchResultsDB, err = sql.Open("sqlite3", "./benchresults/bench_results.db")
 	handleErr("open sqlite db", err)
 	defer closeDB(benchResultsDB)
 
-	rows, err := benchResultsDB.Query("select BENCHNAME, BENCHTIME, ALLOC_BYTES, ALLOC_OP, NS_OP from bench_results")
+	rows, err := benchResultsDB.Query("select BENCHNAME, BENCHTIME, ALLOC_BYTES, ALLOC_OP, NS_OP from bench_results order by BENCHNAME")
 	handleErr("select bench result", err)
 
 	// marshal data
-	var results []benchmarkResult
+	var allBenchmarkResults = make(map[string][]benchmarkResult) // map of benchmark name => slice of individual benchmark results
+	var lastBenchName string                                     // used to seperate benchmarks by name
+	var oneBenchmarkHistory []benchmarkResult                    // the history of a single benchmark
 	for rows.Next() {
 		var br = new(benchmarkResult)
 		var err = rows.Scan(&br.Benchname, &br.Benchtime, &br.Alloc_bytes, &br.Alloc_op, &br.Ns_op)
 		handleErr("scan bench result", err)
-		results = append(results, *br)
+
+		if br.Benchname != lastBenchName {
+			allBenchmarkResults[br.Benchname] = oneBenchmarkHistory
+			oneBenchmarkHistory = oneBenchmarkHistory[:0] // reset this for nect benchmark
+			lastBenchName = br.Benchname
+		}
+		oneBenchmarkHistory = append(oneBenchmarkHistory, *br)
 	}
-	return results
+	return allBenchmarkResults
 }

@@ -29,10 +29,6 @@ func main() {
 	insertBenchmarkResult(br)
 	fmt.Println(result)
 
-	//var bs = benchSeries{
-	//	Name:    "BenchmarkBadgerDBPutValue512B",
-	//	Results: []benchmarkResult{br},
-	//}
-	//drawChart([]benchSeries{bs}, getNsOp)
+	drawChart("title", getAllBenchmarkResults(), getNsOp)
 	os.RemoveAll("benchdata")
 }
