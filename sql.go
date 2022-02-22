@@ -26,14 +26,16 @@ func goBenchmarkResultToBenchmarkResult(benchName string, tbr testing.BenchmarkR
 	}
 }
 
+func closeDB(db *sql.DB) {
+	var err = db.Close()
+	handleErr("close sqlite db", err)
+}
+
 func insertBenchmarkResult(br benchmarkResult) {
 	// open
 	var benchResultsDB, err = sql.Open("sqlite3", "./benchresults/bench_results.db")
 	handleErr("open sqlite db", err)
-	defer func() {
-		var err = benchResultsDB.Close()
-		handleErr("close sqlite db", err)
-	}()
+	defer closeDB(benchResultsDB)
 
 	// insert
 	insertStudentSQL := `INSERT INTO bench_results(BENCHNAME, BENCHTIME, ALLOC_BYTES, ALLOC_OP, NS_OP) VALUES (?, ?, ?, ?, ?)`
@@ -41,4 +43,24 @@ func insertBenchmarkResult(br benchmarkResult) {
 	handleErr("prepare sql", err)
 	_, err = statement.Exec(br.Benchname, br.Benchtime, br.Alloc_bytes, br.Alloc_op, br.Ns_op)
 	handleErr("insert bench result", err)
+}
+
+func getAllBenchmarkResult() []benchmarkResult {
+	// open
+	var benchResultsDB, err = sql.Open("sqlite3", "./benchresults/bench_results.db")
+	handleErr("open sqlite db", err)
+	defer closeDB(benchResultsDB)
+
+	rows, err := benchResultsDB.Query("select BENCHNAME, BENCHTIME, ALLOC_BYTES, ALLOC_OP, NS_OP from bench_results")
+	handleErr("select bench result", err)
+
+	// marshal data
+	var results []benchmarkResult
+	for rows.Next() {
+		var br = new(benchmarkResult)
+		var err = rows.Scan(&br.Benchname, &br.Benchtime, &br.Alloc_bytes, &br.Alloc_op, &br.Ns_op)
+		handleErr("scan bench result", err)
+		results = append(results, *br)
+	}
+	return results
 }
