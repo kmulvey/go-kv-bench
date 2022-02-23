@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -26,6 +28,10 @@ func main() {
 		insertBenchmarkResult(br)
 		fmt.Println(result)
 	*/
-	drawChart("Compare All", getAllBenchmarkResults(), "ns")
+	drawChart("all-ns.jpeg", getAllBenchmarkResults(), "ns")
+	drawChart("all-alloc-op.jpeg", getAllBenchmarkResults(), "alloc-op")
+	drawChart("all-alloc-bytes.jpeg", getAllBenchmarkResults(), "alloc-bytes")
 	os.RemoveAll("benchdata")
+
+	fmt.Println(time.Now().Format(time.RFC3339))
 }

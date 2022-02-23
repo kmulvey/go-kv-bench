@@ -15,8 +15,8 @@ type yValueGetter func(benchmarkResult) float64
 
 var nameToGetter = map[string]yValueGetter{
 	"ns":          getNsOp,
-	"alloc op":    getAllocOp,
-	"alloc bytes": getAllocBytes,
+	"alloc-op":    getAllocOp,
+	"alloc-bytes": getAllocBytes,
 }
 
 func drawChart(filename string, benchmarks map[string][]benchmarkResult, yGetter string) {
@@ -38,6 +38,9 @@ func drawChart(filename string, benchmarks map[string][]benchmarkResult, yGetter
 		}
 		graph.Series[i] = ts
 		i++
+	}
+	graph.Elements = []chart.Renderable{
+		chart.Legend(graph),
 	}
 
 	// render the above into a PNG
