@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -29,12 +29,10 @@ func main() {
 		fmt.Println(result)
 	*/
 	var m = getAllBenchmarkResults()
-	var c = marshalChartjs(m)
-	js, _ := json.Marshal(c)
-	fmt.Println(string(js))
+	var err = writeChartDataFile(m, "benchresults/benchmark_data.js")
+	if err != nil {
+		log.Error(err)
+	}
 
-	//drawChart("all-ns.jpeg", getAllBenchmarkResults(), "ns")
-	//drawChart("all-alloc-op.jpeg", getAllBenchmarkResults(), "alloc-op")
-	//drawChart("all-alloc-bytes.jpeg", getAllBenchmarkResults(), "alloc-bytes")
 	os.RemoveAll("benchdata")
 }

@@ -2,6 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -99,7 +102,38 @@ func (c jsTime) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + time.Time(c).Format(time.RFC3339) + `"`), nil
 }
 
-func marshalChartjs(benchmarks map[string][]benchmarkResult) chartJSData {
+var jsVarToGetterMap = map[string]yValueGetter{
+	"nsOpData":       getNsOp,
+	"allocBytesData": getAllocBytes,
+	"allocOpData":    getAllocOp,
+}
+
+func writeChartDataFile(benchmarks map[string][]benchmarkResult, filename string) error {
+	var file, err = os.Create(filename)
+	if err != nil {
+		return err
+	}
+	for varName, yGetter := range jsVarToGetterMap {
+		file.WriteString(fmt.Sprintf("const %s = ", varName))
+		var js, err = json.Marshal(marshalChartjsData(benchmarks, yGetter))
+		if err != nil {
+			return err
+		}
+		file.Write(js)
+		file.WriteString(";\n")
+
+		//var encoder = json.NewEncoder(file)
+		//err = encoder.Encode(marshalChartjsData(benchmarks, yGetter))
+		//if err != nil {
+		//	return err
+		//}
+		//file.WriteString(";")
+	}
+
+	return file.Close()
+}
+
+func marshalChartjsData(benchmarks map[string][]benchmarkResult, yGetter yValueGetter) *chartJSData {
 	var chart = new(chartJSData)
 	chart.Datasets = make([]chartDataset, len(benchmarks))
 
@@ -110,11 +144,10 @@ func marshalChartjs(benchmarks map[string][]benchmarkResult) chartJSData {
 		for j, benchmark := range history {
 			chart.Datasets[i].Data[j] = chartData{
 				X: jsTime(benchmark.Benchtime),
-				Y: getNsOp(benchmark),
+				Y: yGetter(benchmark),
 			}
 		}
 		i++
 	}
-
-	return *chart
+	return chart
 }
