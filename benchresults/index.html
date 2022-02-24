@@ -1,61 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
         <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+        <script src="./config.js"></script>
+        <script src="./nsop.js"></script>
+        <script src="./allocbytes.js"></script>
+        <script src="./allocop.js"></script>
+        <script>
+            window.onload = function() {
+                const ctx = document.getElementById('ns-op').getContext('2d');
+                const config = createChartConfig("NS/OP",nsOpData);
+                config.data.datasets.forEach(function(item, index, arr){
+                    item.backgroundColor=COLORS[index];
+                    item.borderColor=COLORS[index];
+                });
+                const chart = new Chart(ctx, config);
+            };
+        </script>
     </head>
     <body>
-        <canvas id="myChart" width="400" height="400"></canvas>
-        <script>
-            const COLORS = [
-                '#4dc9f6',
-                '#f67019',
-                '#f53794',
-                '#537bc4',
-                '#acc236',
-                '#166a8f',
-                '#00a950',
-                '#58595b',
-                '#8549ba'
-            ];
-            const benchdata = {"datasets":[{"label":"BadgerDBPutValue512B","data":[{"x":"2022-02-15T15:24:37-07:00","y":38327},{"x":"2022-02-15T15:25:15-07:00","y":41083},{"x":"2022-02-17T12:58:14-07:00","y":40083},{"x":"2022-02-17T13:01:29-07:00","y":39051},{"x":"2022-02-17T13:02:06-07:00","y":40202},{"x":"2022-02-19T15:04:10-07:00","y":39948},{"x":"2022-02-19T15:10:36-07:00","y":39709},{"x":"2022-02-19T15:10:52-07:00","y":39418},{"x":"2022-02-19T15:13:41-07:00","y":41180},{"x":"2022-02-19T15:16:21-07:00","y":39087},{"x":"2022-02-19T15:18:03-07:00","y":39888},{"x":"2022-02-19T15:19:10-07:00","y":39835},{"x":"2022-02-19T15:22:03-07:00","y":38987},{"x":"2022-02-19T15:22:29-07:00","y":39042},{"x":"2022-02-19T15:22:58-07:00","y":37793},{"x":"2022-02-19T15:23:11-07:00","y":37319},{"x":"2022-02-19T15:25:24-07:00","y":37167},{"x":"2022-02-19T15:25:53-07:00","y":36412},{"x":"2022-02-19T15:26:21-07:00","y":38782},{"x":"2022-02-19T15:27:01-07:00","y":37840},{"x":"2022-02-19T15:44:12-07:00","y":39360},{"x":"2022-02-19T15:46:13-07:00","y":37459},{"x":"2022-02-22T11:49:34-07:00","y":40505},{"x":"2022-02-22T15:08:58-07:00","y":40216},{"x":"2022-02-22T16:34:59-07:00","y":38609}]},{"label":"BoltDBPutValue512B","data":[{"x":"2022-02-19T15:10:38-07:00","y":2513338},{"x":"2022-02-19T15:10:53-07:00","y":2516063},{"x":"2022-02-19T15:13:42-07:00","y":2467436},{"x":"2022-02-19T15:25:25-07:00","y":2556664},{"x":"2022-02-19T15:25:54-07:00","y":2579837},{"x":"2022-02-19T15:26:23-07:00","y":2470860},{"x":"2022-02-19T15:27:03-07:00","y":2580848},{"x":"2022-02-19T15:44:13-07:00","y":2566745},{"x":"2022-02-19T15:46:15-07:00","y":2554796},{"x":"2022-02-22T11:49:35-07:00","y":2428531},{"x":"2022-02-22T15:08:59-07:00","y":2390185},{"x":"2022-02-22T16:35:01-07:00","y":2460702}]},{"label":"GoMapPutValue512B","data":[{"x":"2022-02-22T11:49:38-07:00","y":1137},{"x":"2022-02-22T15:09:03-07:00","y":1025},{"x":"2022-02-22T16:35:03-07:00","y":1181}]},{"label":"NutsDBPutValue512B","data":[{"x":"2022-02-19T15:44:15-07:00","y":1185454},{"x":"2022-02-19T15:46:16-07:00","y":1207838},{"x":"2022-02-22T11:49:37-07:00","y":1186111},{"x":"2022-02-22T15:09:01-07:00","y":1197596},{"x":"2022-02-22T16:35:02-07:00","y":1231803}]}]};
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const config = {
-                type: 'line',
-                data: benchdata,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'NS/OP'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'NS/OP'
-                            }
-                        },
-                    }
-                },
-            };
-            config.data.datasets.forEach(function(item, index, arr){
-                item.backgroundColor=COLORS[index];
-                item.borderColor=COLORS[index];
-            });
-            const myChart = new Chart(ctx, config);
-        </script>
+        <canvas id="ns-op" width="400" height="400"></canvas>
+        <canvas id="alloc-bytes" width="400" height="400"></canvas>
+        <canvas id="alloc-op" width="400" height="400"></canvas>
     </body>
 </html>
