@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 )
 
 func main() {
@@ -28,10 +28,13 @@ func main() {
 		insertBenchmarkResult(br)
 		fmt.Println(result)
 	*/
-	drawChart("all-ns.jpeg", getAllBenchmarkResults(), "ns")
-	drawChart("all-alloc-op.jpeg", getAllBenchmarkResults(), "alloc-op")
-	drawChart("all-alloc-bytes.jpeg", getAllBenchmarkResults(), "alloc-bytes")
-	os.RemoveAll("benchdata")
+	var m = getAllBenchmarkResults()
+	var c = marshalChartjs(m)
+	js, _ := json.Marshal(c)
+	fmt.Println(string(js))
 
-	fmt.Println(time.Now().Format(time.RFC3339))
+	//drawChart("all-ns.jpeg", getAllBenchmarkResults(), "ns")
+	//drawChart("all-alloc-op.jpeg", getAllBenchmarkResults(), "alloc-op")
+	//drawChart("all-alloc-bytes.jpeg", getAllBenchmarkResults(), "alloc-bytes")
+	os.RemoveAll("benchdata")
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"strings"
 	"testing"
 	"time"
 
@@ -63,12 +64,57 @@ func getAllBenchmarkResults() map[string][]benchmarkResult {
 		var err = rows.Scan(&br.Benchname, &br.Benchtime, &br.Alloc_bytes, &br.Alloc_op, &br.Ns_op)
 		handleErr("scan bench result", err)
 
-		if br.Benchname != lastBenchName {
-			allBenchmarkResults[br.Benchname] = oneBenchmarkHistory
-			oneBenchmarkHistory = oneBenchmarkHistory[:0] // reset this for nect benchmark
+		// init
+		if lastBenchName == "" {
 			lastBenchName = br.Benchname
 		}
-		oneBenchmarkHistory = append(oneBenchmarkHistory, *br)
+
+		// we GROUP'd BY benchname so every time it changes we need to put the current slice in the map and start a new one
+		if br.Benchname != lastBenchName {
+			allBenchmarkResults[lastBenchName] = oneBenchmarkHistory
+			oneBenchmarkHistory = []benchmarkResult{*br} // reset this for next benchmark
+			lastBenchName = br.Benchname
+		} else {
+			oneBenchmarkHistory = append(oneBenchmarkHistory, *br)
+		}
 	}
+	allBenchmarkResults[lastBenchName] = oneBenchmarkHistory // catch the last one
 	return allBenchmarkResults
+}
+
+type chartJSData struct {
+	Datasets []chartDataset `json:"datasets"`
+}
+type chartDataset struct {
+	Label string      `json:"label"`
+	Data  []chartData `json:"data"`
+}
+type chartData struct {
+	X jsTime  `json:"x"`
+	Y float64 `json:"y"`
+}
+type jsTime time.Time
+
+func (c jsTime) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + time.Time(c).Format(time.RFC3339) + `"`), nil
+}
+
+func marshalChartjs(benchmarks map[string][]benchmarkResult) chartJSData {
+	var chart = new(chartJSData)
+	chart.Datasets = make([]chartDataset, len(benchmarks))
+
+	var i int
+	for name, history := range benchmarks {
+		chart.Datasets[i].Label = strings.ReplaceAll(name, "Benchmark", "")
+		chart.Datasets[i].Data = make([]chartData, len(history))
+		for j, benchmark := range history {
+			chart.Datasets[i].Data[j] = chartData{
+				X: jsTime(benchmark.Benchtime),
+				Y: getNsOp(benchmark),
+			}
+		}
+		i++
+	}
+
+	return *chart
 }
