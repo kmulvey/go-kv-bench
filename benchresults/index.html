@@ -5,18 +5,33 @@
         <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
         <script src="./config.js"></script>
-        <script src="./nsop.js"></script>
-        <script src="./allocbytes.js"></script>
-        <script src="./allocop.js"></script>
+        <script src="./benchmark_data.js"></script>
         <script>
+            var benchmarkConfig = [{
+                htmlID: "ns-op",
+                title: "NS/OP",
+                data: nsOpData,
+            },
+            {
+                htmlID: "alloc-bytes",
+                title: "Allocated Bytes",
+                data: allocBytesData,
+            },
+            {
+                htmlID: "alloc-op",
+                title: "Alloc/OP",
+                data: allocOpData,
+            }];
             window.onload = function() {
-                const ctx = document.getElementById('ns-op').getContext('2d');
-                const config = createChartConfig("NS/OP",nsOpData);
-                config.data.datasets.forEach(function(item, index, arr){
-                    item.backgroundColor=COLORS[index];
-                    item.borderColor=COLORS[index];
-                });
-                const chart = new Chart(ctx, config);
+                benchmarkConfig.forEach((element, index, array) => { 
+                    const ctx = document.getElementById(element.htmlID).getContext('2d');
+                    const config = createChartConfig(element.title,element.data);
+                    config.data.datasets.forEach(function(item, index, arr){
+                        item.backgroundColor=COLORS[index];
+                        item.borderColor=COLORS[index];
+                    });
+                    const chart = new Chart(ctx, config);
+                })
             };
         </script>
     </head>
